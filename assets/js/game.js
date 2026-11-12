@@ -1,4 +1,9 @@
 function init() {
+  gid++;
+  badge = null;
+  judged = {};
+  endDismissed = false;
+  rules = [];
   const b = Array.from({length: 8}, () => Array(8).fill(null)), row = 'rnbqkbnr';
   for (let c = 0; c < 8; c++) {
     b[0][c] = {t: row[c], c: 'b'};
@@ -19,6 +24,7 @@ function init() {
 }
 
 function play(f, m) {
+  queueJudge(S.turn, f, m, hist.length + 1);
   S.rl = rules;
   hist.push(JSON.stringify(S));
   S.rl = null;
@@ -128,6 +134,7 @@ function click(r, c) {
 function render() {
   if (two) human = S.turn;
   const k = kpos(S.b, S.turn), chk = !kc() && k && attacked(S.b, k[0], k[1], opp(S.turn));
+  const bd = badge && badge.gid == gid && hist.length >= badge.ply && hist.length <= badge.ply + 1 ? badge : null;
   let h = '';
   for (let a = 0; a < 64; a++) {
     const fl = human == 'b' && !two;
@@ -141,7 +148,9 @@ function render() {
     }
     if (chk && k[0] == r && k[1] == c) cl.push('chk');
     if (p && mod(p)) cl.push('mod');
-    h += `<div class="${cl.join(' ')}" data-r="${r}" data-c="${c}">${p ? `<span class="${p.c}">${G[p.t]}</span>` : ''}</div>`;
+    const piece = p ? `<span class="${p.c}${p.t == 'k' ? ' wiz' : ''}">${G[p.t]}</span>` : '';
+    const mark = bd && bd.r == r && bd.c == c ? `<i class="badge ${bd.cls}" title="${bd.name}">${bd.sym}</i>` : '';
+    h += `<div class="${cl.join(' ')}" data-r="${r}" data-c="${c}">${piece}${mark}</div>`;
   }
   $('bd').innerHTML = h;
 
@@ -156,22 +165,47 @@ function render() {
   $('rl').innerHTML = rules.length
     ? rules.map((r, i) => `<li><span>${desc(r)}</span><button data-i="${i}" ${r.side == human && !r.cu ? '' : 'hidden'} aria-label="Remove rule">\u00d7</button></li>`).join('')
     : '<li class="none">No spells active yet. Cast one above, or try a quick spell.</li>';
+  renderEnd();
 }
 
-function opts(any) {
-  return Object.keys(N).map(k => `<option value="${k}">${N[k]}</option>`).join('') + (any ? '<option value="*">Any piece</option>' : '');
+function renderEnd() {
+  const show = !!S.over && !endDismissed;
+  $('endmodal').classList.toggle('hid', !show);
+  if (!show) return;
+  const mate = /^Checkmate/.test(S.over), stale = /^Stalemate/.test(S.over);
+  let title = 'Game over';
+  if (S.kingWin) title = 'King captured';
+  else if (mate) title = 'Checkmate';
+  else if (stale) title = 'Stalemate';
+  let sub = S.over;
+  if (mate && !two) sub = opp(S.turn) == human ? 'You checkmated the enemy wizard.' : 'The enemy wizard checkmated you.';
+  $('endtitle').textContent = title;
+  $('endsub').textContent = sub;
+  const row = (col, label, extra) => {
+    const a = acplOf(col), n = judgedCount(col);
+    const headline = a == null ? 'Not enough moves to estimate' : `Est. Elo ${eloFromAcpl(a)}`;
+    const detail = a == null ? '' : `avg. loss ${a.toFixed(0)} cp over ${n} moves`;
+    return `<div class="erow"><span>${label}</span><strong>${headline}</strong><small>${[detail, extra].filter(Boolean).join(' · ')}</small></div>`;
+  };
+  $('endstats').innerHTML = two
+    ? row('w', 'White') + row('b', 'Black')
+    : row(human, 'You') + row(opp(human), 'Enemy wizard', `set to ${levelText(level)}`);
+}
+
+function opts() {
+  return Object.keys(N).map(k => `<option value="${k}">${N[k]}</option>`).join('');
 }
 
 function form() {
   const k = $('kind').value, n = NEED[k];
-  $('pb').innerHTML = opts(k == 'immune');
+  $('pb').innerHTML = opts();
   [['pa', 'a'], ['pb', 'b'], ['num', 'n']].forEach(([id, f]) => $(id).classList.toggle('hid', !n.includes(f)));
 }
 
 function cform() {
   const k = $('cs').value;
-  $('ca').innerHTML = CP[k].map(x => `<option value="${x}">${N[x]}</option>`).join('') + (k == 'nocap' ? '<option value="*">Any piece</option>' : '');
-  $('cb').innerHTML = opts(true);
+  $('ca').innerHTML = CP[k].map(x => `<option value="${x}">${N[x]}</option>`).join('');
+  $('cb').innerHTML = opts();
   [['cb', k == 'nocap'], ['cn', k == 'range']].forEach(([id, on]) => $(id).classList.toggle('hid', !on));
 }
 
@@ -180,7 +214,7 @@ function formRule() {
   return {
     k,
     side: human,
-    a: n.includes('a') ? $('pa').value : (k == 'back' ? 'p' : '*'),
+    a: n.includes('a') ? $('pa').value : 'p',
     b: $('pb').value,
     n: Math.max(1, Math.min(8, +$('num').value || 1)),
     t: ''
@@ -207,7 +241,7 @@ function lab() {
 }
 
 $('kind').innerHTML = Object.keys(KINDS).map(k => `<option value="${k}">${KINDS[k]}</option>`).join('');
-$('pa').innerHTML = opts(true);
+$('pa').innerHTML = opts();
 $('kind').onchange = form;
 
 $('ch').innerHTML = '<span class="chips-label hint">Quick spells</span>' + PRE.map((p, i) => `<button data-p="${i}">${p[0]} (${cost(p[1])})</button>`).join('');
@@ -237,6 +271,7 @@ $('un').onclick = () => {
   S.rl = null;
   sel = null;
   legal = [];
+  endDismissed = false;
   if (!S.over && S.turn != human) think();
   else render();
 };
@@ -247,6 +282,11 @@ $('mn').onclick = () => {
   $('game').classList.add('hid');
   $('setup').classList.remove('hid');
 };
+$('again').onclick = init;
+$('cont').onclick = () => {
+  endDismissed = true;
+  render();
+};
 
 document.querySelectorAll('.seg').forEach(g => g.onclick = e => {
   const b = e.target.closest('button');
@@ -254,7 +294,7 @@ document.querySelectorAll('.seg').forEach(g => g.onclick = e => {
   g.querySelectorAll('button').forEach(x => x.classList.toggle('on', x == b));
 });
 
-$('lvl').oninput = () => $('lvlOut').textContent = $('lvl').value;
+$('lvl').oninput = () => $('lvlOut').textContent = levelText(+$('lvl').value);
 
 $('go').onclick = () => {
   const v = id => document.querySelector('#' + id + ' .on').dataset.v;

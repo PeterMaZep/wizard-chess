@@ -4,7 +4,23 @@ let sfDead = false;
 let sfWaiters = [];
 let sfReady = null;
 let sfChain = Promise.resolve();
-let sfSkillSet = null;
+let sfConfigKey = null;
+let sfInfoScore = null;
+
+function sfHandle(line) {
+  const m = line.match(/ score (cp|mate) (-?\d+)/);
+  if (m) {
+    const n = +m[2];
+    sfInfoScore = m[1] == 'cp' ? n : n > 0 ? 100000 - n * 100 : -100000 - n * 100;
+  }
+  sfWaiters = sfWaiters.filter(w => {
+    if (w.re.test(line)) {
+      w.resolve(line);
+      return false;
+    }
+    return true;
+  });
+}
 
 function sfStart() {
   if (sfWorker) return true;
@@ -15,19 +31,11 @@ function sfStart() {
     sfDead = true;
     return false;
   }
-  sfWorker.onmessage = e => {
-    const line = String(e.data);
-    sfWaiters = sfWaiters.filter(w => {
-      if (w.re.test(line)) {
-        w.resolve(line);
-        return false;
-      }
-      return true;
-    });
-  };
+  sfWorker.onmessage = e => sfHandle(String(e.data));
   sfWorker.onerror = () => {
     sfDead = true;
     sfWorker = null;
+    sfReady = null;
   };
   return true;
 }
@@ -46,13 +54,17 @@ function sfWait(re, ms) {
   });
 }
 
+function sfAsk(cmd, re, ms) {
+  const p = sfWait(re, ms);
+  sfWorker.postMessage(cmd);
+  return p;
+}
+
 function sfEnsureReady() {
   if (!sfReady) {
     sfReady = (async () => {
-      sfWorker.postMessage('uci');
-      await sfWait(/^uciok/, 20000);
-      sfWorker.postMessage('isready');
-      await sfWait(/^readyok/, 20000);
+      await sfAsk('uci', /^uciok/, 20000);
+      await sfAsk('isready', /^readyok/, 20000);
     })().catch(e => {
       sfReady = null;
       throw e;
@@ -61,23 +73,35 @@ function sfEnsureReady() {
   return sfReady;
 }
 
-async function sfRun(fen, moves, depth, skill) {
-  if (!sfStart()) throw new Error('Stockfish unavailable');
-  await sfEnsureReady();
-  if (sfSkillSet !== skill) {
-    sfWorker.postMessage('setoption name Skill Level value ' + skill);
-    sfSkillSet = skill;
+function sfConfigure(cfg) {
+  const k = cfg.elo ? 'elo' + cfg.elo : 'skill' + cfg.skill;
+  if (k == sfConfigKey) return;
+  if (cfg.elo) {
+    sfWorker.postMessage('setoption name UCI_LimitStrength value true');
+    sfWorker.postMessage('setoption name UCI_Elo value ' + cfg.elo);
+  } else {
+    sfWorker.postMessage('setoption name UCI_LimitStrength value false');
+    sfWorker.postMessage('setoption name Skill Level value ' + cfg.skill);
   }
-  sfWorker.postMessage('position fen ' + fen);
-  const done = sfWait(/^bestmove /, 60000);
-  sfWorker.postMessage('go depth ' + depth + ' searchmoves ' + moves.join(' '));
-  const line = await done;
-  const mv = line.split(' ')[1];
-  return mv && mv !== '(none)' && mv !== '0000' ? mv : null;
+  sfConfigKey = k;
 }
 
-function sfSearch(fen, moves, depth, skill) {
-  const job = sfChain.then(() => sfRun(fen, moves, depth, skill));
+async function sfRun(fen, moves, depth, cfg) {
+  if (!sfStart()) throw new Error('Stockfish unavailable');
+  await sfEnsureReady();
+  sfConfigure(cfg);
+  sfInfoScore = null;
+  sfWorker.postMessage('position fen ' + fen);
+  const line = await sfAsk('go depth ' + depth + (moves ? ' searchmoves ' + moves.join(' ') : ''), /^bestmove /, 60000);
+  const mv = line.split(' ')[1];
+  return {
+    move: mv && mv !== '(none)' && mv !== '0000' ? mv : null,
+    score: sfInfoScore
+  };
+}
+
+function sfSearch(fen, moves, depth, cfg) {
+  const job = sfChain.then(() => sfRun(fen, moves, depth, cfg));
   sfChain = job.catch(() => {});
   return job;
 }

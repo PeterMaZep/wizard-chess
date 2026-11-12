@@ -8,10 +8,12 @@ scripts:
   - /assets/js/data.js
   - /assets/js/rules.js
   - /assets/js/engine.js
+  - /assets/js/judge.js
   - /assets/js/ai.js
   - /assets/js/game.js
 ---
 <script>window.SF_BASE = "{{ '/assets/js/vendor/' | relative_url }}";</script>
+
 <section id="setup" class="setup">
   <div class="panel">
     <div class="pcs" aria-hidden="true">♜♞♝♛♚♝♞♜</div>
@@ -31,7 +33,7 @@ scripts:
         <button data-v="b">Black</button>
         <button data-v="r">Random</button>
       </div>
-      <div class="opt">Enemy wizard level: <span id="lvlOut">10</span></div>
+      <div class="opt">Enemy wizard level: <span id="lvlOut">10 (≈1500 Elo)</span></div>
       <input type="range" id="lvl" class="slider" min="1" max="20" value="10" aria-label="Enemy wizard level">
       <div class="scale"><span>Apprentice</span><span>Archmage</span></div>
     </div>
@@ -89,5 +91,17 @@ scripts:
       <h2>Active spells</h2>
       <ul id="rl"></ul>
     </aside>
+  </div>
+
+  <div id="endmodal" class="modal hid" role="dialog" aria-modal="true" aria-labelledby="endtitle">
+    <div class="modal-card">
+      <h2 id="endtitle"></h2>
+      <p id="endsub"></p>
+      <div id="endstats" class="endstats"></div>
+      <div class="btns">
+        <button id="again" class="pri">Play again</button>
+        <button id="cont">Continue playing</button>
+      </div>
+    </div>
   </div>
 </section>

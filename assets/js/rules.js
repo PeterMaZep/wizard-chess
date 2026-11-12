@@ -1,7 +1,7 @@
 const opp = c => c == 'w' ? 'b' : 'w';
 const mt = (a, t) => a == '*' || a == t;
 const kc = () => rules.some(x => x.k == 'kingcap');
-const pn = t => t == '*' ? 'any piece' : N[t].toLowerCase();
+const pn = t => N[t].toLowerCase();
 const mod = p => rules.some(x => !['extra','kingcap','note'].includes(x.k) && (x.side == 'x' || x.side == p.c) && mt(x.a, p.t));
 const has = r => rules.some(x => !!x.cu == !!r.cu && x.k == r.k && x.side == r.side && x.a == r.a && x.b == r.b);
 
@@ -13,7 +13,7 @@ function desc(r) {
   const a = pn(r.a);
   return ({
     borrow: `${s}: ${a} also moves like a ${pn(r.b)}`,
-    leap: `${s}: ${a} can jump over pieces`,
+    leap: `${s}: ${a} can jump over one piece`,
     range: `${s}: ${a} can move up to ${r.n} square${r.n > 1 ? 's' : ''}`,
     immune: `${s}: ${a} cannot be captured by ${pn(r.b)}`,
     freeze: `${s}: ${a} cannot move`,
@@ -69,6 +69,7 @@ function gen(b, r, c, ep) {
     } else {
       const lim = rg.length ? rg[rg.length - 1] : (ty == 'k' ? 1 : 8);
       for (const [a, d] of D[ty]) {
+        let occ = 0;
         for (let i = 1; i <= lim; i++) {
           const rr = r + a * i, cc = c + d * i;
           if (rr < 0 || rr > 7 || cc < 0 || cc > 7) break;
@@ -76,8 +77,9 @@ function gen(b, r, c, ep) {
             out.push({r: rr, c: cc});
             continue;
           }
+          occ++;
           add(rr, cc);
-          if (!leap) break;
+          if (!leap || occ >= 2) break;
         }
       }
     }
@@ -180,9 +182,9 @@ function cost(r) {
   if (r.cu) return k == 'freeze' ? 4 : 2;
   if (k == 'back') return 1;
   if (k == 'range') return r.n > 2 ? 3 : 2;
-  if (k == 'leap' || k == 'immune') return a == 'q' || a == '*' ? 3 : 2;
-  if (k == 'borrow') return r.b == 'q' || a == '*' ? 3 : 2;
-  return a == '*' ? 4 : 3;
+  if (k == 'leap' || k == 'immune') return a == 'q' ? 3 : 2;
+  if (k == 'borrow') return r.b == 'q' ? 3 : 2;
+  return 3;
 }
 
 function withRules(R, fn) {

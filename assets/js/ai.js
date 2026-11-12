@@ -53,12 +53,10 @@ function pseudo(b, col, ep) {
   return o;
 }
 
-function skillFor(l) {
-  return Math.round((l - 1) * 20 / 19);
-}
-
-function depthFor(l) {
-  return Math.max(1, Math.round(l * 0.5));
+function engineSetting(l) {
+  const elo = LEVEL_ELO[l];
+  if (elo >= 1320) return {cfg: {elo}, depth: Math.min(14, 8 + Math.floor((elo - 1320) / 300))};
+  return {cfg: {skill: Math.max(0, Math.min(10, Math.round((elo - 400) / 120)))}, depth: elo < 1000 ? 2 : 4};
 }
 
 function lineValue(col, x) {
@@ -91,9 +89,11 @@ async function chooseMove(col, ms) {
   const std = ms.filter(x => stdKeys.has(key(x.f, x.m)));
   let best = null;
   if (std.length) {
+    const st = engineSetting(level);
     let mv = null;
     try {
-      mv = await sfSearch(toFen(S.b, col, S.ep), std.map(x => uciOf(S.b, x.f, x.m)), depthFor(level), skillFor(level));
+      const r = await sfSearch(toFen(S.b, col, S.ep), std.map(x => uciOf(S.b, x.f, x.m)), st.depth, st.cfg);
+      mv = r.move;
     } catch (e) {
       mv = null;
     }
@@ -135,7 +135,7 @@ function castCandidates(col) {
   for (const a of inSet(own, ['p', 'n', 'b', 'r']))
     for (const b of ['n', 'b', 'r', 'k', 'q']) if (b != a) add({k: 'borrow', side: col, a, b, n: 3, t: ''});
   if (own.has('p')) add({k: 'back', side: col, a: 'p', b: 'p', n: 3, t: ''});
-  add({k: 'extra', side: col, a: '*', b: 'p', n: 3, t: ''});
+  for (const a of own) add({k: 'extra', side: col, a, b: 'p', n: 3, t: ''});
 
   for (const a of inSet(foe, ['b', 'r', 'q']))
     for (const n of [1, 2]) add({k: 'range', side: hexSide, cu: true, a, b: 'p', n, t: ''});
