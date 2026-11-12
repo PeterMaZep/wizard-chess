@@ -1,5 +1,5 @@
 title: Wizard Chess
 description: Duel a rival wizard across the board and bend the rules of chess with magic.
 lang: en
-baseurl: ""
-url: ""
+url: "https://petermazep.github.io"
+baseurl: "/wizard-chess"
