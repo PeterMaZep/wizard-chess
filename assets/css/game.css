@@ -229,3 +229,20 @@
   font-size: 1.1rem;
   line-height: 1.5;
 }
+
+.slider {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  accent-color: var(--acc);
+  margin: 6px 0 0;
+}
+
+.scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}

@@ -254,10 +254,12 @@ document.querySelectorAll('.seg').forEach(g => g.onclick = e => {
   g.querySelectorAll('button').forEach(x => x.classList.toggle('on', x == b));
 });
 
+$('lvl').oninput = () => $('lvlOut').textContent = $('lvl').value;
+
 $('go').onclick = () => {
   const v = id => document.querySelector('#' + id + ' .on').dataset.v;
   two = v('mode') == '2';
-  level = +v('lvl');
+  level = +$('lvl').value;
   const s = v('side2');
   human = two ? 'w' : s == 'r' ? (Math.random() < .5 ? 'w' : 'b') : s;
   rules = [];

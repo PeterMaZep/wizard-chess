@@ -184,3 +184,13 @@ function cost(r) {
   if (k == 'borrow') return r.b == 'q' || a == '*' ? 3 : 2;
   return a == '*' ? 4 : 3;
 }
+
+function withRules(R, fn) {
+  const o = rules;
+  rules = R;
+  try {
+    return fn();
+  } finally {
+    rules = o;
+  }
+}
