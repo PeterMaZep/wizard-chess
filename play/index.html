@@ -1,0 +1,94 @@
+---
+layout: default
+title: Play
+description: Set up and play a game of Wizard Chess.
+extra_css:
+  - /assets/css/game.css
+scripts:
+  - /assets/js/data.js
+  - /assets/js/rules.js
+  - /assets/js/ai.js
+  - /assets/js/game.js
+---
+<section id="setup" class="setup">
+  <div class="panel">
+    <div class="pcs" aria-hidden="true">♜♞♝♛♚♝♞♜</div>
+    <h1>Wizard Chess</h1>
+    <p class="lede">Duel a rival wizard across the board, and bend the rules of chess with magic. Make knights move like kings or rooks levitate over pieces. Cast spells on your own pieces, or hex the enemy’s. The rival wizard does the same. Every spell costs mana, which returns as the duel goes on, plus a turn.</p>
+
+    <div class="opt">Play against</div>
+    <div class="seg" id="mode">
+      <button data-v="1" class="on">Enemy wizard</button>
+      <button data-v="2">A friend (same screen)</button>
+    </div>
+
+    <div id="cpuopts">
+      <div class="opt">You play</div>
+      <div class="seg" id="side2">
+        <button data-v="w" class="on">White</button>
+        <button data-v="b">Black</button>
+        <button data-v="r">Random</button>
+      </div>
+      <div class="opt">Enemy wizard level</div>
+      <div class="seg" id="lvl">
+        <button data-v="1">Apprentice</button>
+        <button data-v="2" class="on">Adept</button>
+        <button data-v="3">Archmage</button>
+      </div>
+    </div>
+
+    <button id="go" class="pri">Begin the duel</button>
+  </div>
+</section>
+
+<section id="game" class="game hid">
+  <h1>Wizard Chess</h1>
+  <p class="sub">You are a wizard duelling a rival wizard. Cast spells on your own pieces, or hex the enemy’s. Spells cost mana, which returns as the duel goes on, plus your turn.</p>
+
+  <div class="wrap">
+    <div class="board-col">
+      <div id="st" aria-live="polite"></div>
+      <div id="bd"></div>
+      <div class="btns">
+        <button id="un">Undo</button>
+        <button id="nw">Restart</button>
+        <button id="mn">Menu</button>
+      </div>
+      <p id="nt" class="hint nt" aria-live="polite"></p>
+      <p class="hint">Pieces with an amber dot are under a spell or hex. Pawns promote to queens.</p>
+    </div>
+
+    <aside class="card side">
+      <div id="pt" class="mana"></div>
+
+      <h2 class="flush">Cast a spell on your pieces</h2>
+      <div class="row"><select id="kind" aria-label="Rule type"></select></div>
+      <div class="row">
+        <select id="pa" aria-label="Piece"></select>
+        <select id="pb" aria-label="Second piece"></select>
+        <input id="num" type="number" min="1" max="8" value="3" aria-label="Squares">
+      </div>
+      <button id="add" class="pri">Add rule (uses your turn)</button>
+      <div class="chips" id="ch"></div>
+
+      <h2>Cast a hex</h2>
+      <div class="row">
+        <select id="cs" aria-label="Curse type">
+          <option value="range">Sluggish hex: piece moves at most N squares</option>
+          <option value="nocap">Binding hex: piece cannot capture a type</option>
+          <option value="freeze">Frost hex: piece cannot move</option>
+        </select>
+      </div>
+      <div class="row">
+        <select id="ca" aria-label="Their piece"></select>
+        <select id="cb" aria-label="Type it cannot capture"></select>
+        <input id="cn" type="number" min="1" max="3" value="1" aria-label="Squares">
+      </div>
+      <button id="cgo" class="pri">Curse the computer (uses your turn)</button>
+      <p class="hint">Hexes strike the enemy wizard’s pieces and last for the rest of the duel.</p>
+
+      <h2>Active spells</h2>
+      <ul id="rl"></ul>
+    </aside>
+  </div>
+</section>
