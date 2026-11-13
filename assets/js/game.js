@@ -189,7 +189,7 @@ function renderEnd() {
   };
   $('endstats').innerHTML = two
     ? row('w', 'White') + row('b', 'Black')
-    : row(human, 'You') + row(opp(human), 'Enemy wizard', `set to ${levelText(level)}`);
+    : row(human, 'You') + row(opp(human), 'Enemy wizard', `set to ${eloText(elo)}`);
 }
 
 function opts() {
@@ -294,12 +294,12 @@ document.querySelectorAll('.seg').forEach(g => g.onclick = e => {
   g.querySelectorAll('button').forEach(x => x.classList.toggle('on', x == b));
 });
 
-$('lvl').oninput = () => $('lvlOut').textContent = levelText(+$('lvl').value);
+$('lvl').oninput = () => $('lvlOut').textContent = eloText(+$('lvl').value);
 
 $('go').onclick = () => {
   const v = id => document.querySelector('#' + id + ' .on').dataset.v;
   two = v('mode') == '2';
-  level = +$('lvl').value;
+  elo = +$('lvl').value;
   const s = v('side2');
   human = two ? 'w' : s == 'r' ? (Math.random() < .5 ? 'w' : 'b') : s;
   rules = [];

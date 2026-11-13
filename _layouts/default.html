@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
 <meta name="description" content="{{ page.description | default: site.description | escape }}">
-<link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
-{% for css in page.extra_css %}<link rel="stylesheet" href="{{ css | relative_url }}">
+<link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}?v={{ site.time | date: '%s' }}">
+{% for css in page.extra_css %}<link rel="stylesheet" href="{{ css | relative_url }}?v={{ site.time | date: '%s' }}">
 {% endfor %}</head>
 <body>
 {% include header.html %}
@@ -14,6 +14,8 @@
 {{ content }}
 </main>
 {% include footer.html %}
-{% for js in page.scripts %}<script src="{{ js | relative_url }}"></script>
-{% endfor %}</body>
+<script>window.SITE_BASE = "{{ '/' | relative_url }}";</script>
+{% for js in page.scripts %}<script src="{{ js | relative_url }}?v={{ site.time | date: '%s' }}"></script>
+{% endfor %}<script type="module" src="{{ '/assets/js/firebase/account.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
+</body>
 </html>

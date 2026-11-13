@@ -1,30 +1,33 @@
 ---
 layout: default
 title: Play
-description: Set up and play a game of Wizard Chess.
+description: Play a game of Wizezz.
 extra_css:
   - /assets/css/game.css
 scripts:
-  - /assets/js/data.js
-  - /assets/js/rules.js
-  - /assets/js/engine.js
-  - /assets/js/judge.js
-  - /assets/js/ai.js
-  - /assets/js/game.js
+  - /assets/js/chess/data.js
+  - /assets/js/chess/rules.js
+  - /assets/js/stockfish/engine.js
+  - /assets/js/chess/judge.js
+  - /assets/js/rating/rating.js
+  - /assets/js/online/lobby.js
+  - /assets/js/online/sync.js
+  - /assets/js/chess/ai.js
+  - /assets/js/game/state.js
+  - /assets/js/game/view.js
+  - /assets/js/game/controls.js
+  - /assets/js/game/play-page.js
 ---
 <script>window.SF_BASE = "{{ '/assets/js/vendor/' | relative_url }}";</script>
 
 <section id="setup" class="setup">
   <div class="panel">
     <div class="pcs" aria-hidden="true">♜♞♝♛♚♝♞♜</div>
-    <h1>Wizard Chess</h1>
-    <p class="lede">Duel a rival wizard across the board, and bend the rules of chess with magic. Make knights move like kings or rooks levitate over pieces. Cast spells on your own pieces, or hex the enemy’s. The rival wizard does the same. Every spell costs mana, which returns as the duel goes on, plus a turn.</p>
+    <h1>Wizezz</h1>
+    <p class="lede">Choose how strong the enemy wizard is, then begin the duel.</p>
 
-    <div class="opt">Play against</div>
-    <div class="seg" id="mode">
-      <button data-v="1" class="on">Enemy wizard</button>
-      <button data-v="2">A friend (same screen)</button>
-    </div>
+    <p class="rating-line">Your Elo <strong id="myElo">600</strong> · Recommended <button id="recBtn" type="button" class="chip-btn">650 Elo</button></p>
+    <p id="capNote" class="hint"></p>
 
     <div id="cpuopts">
       <div class="opt">You play</div>
@@ -33,9 +36,9 @@ scripts:
         <button data-v="b">Black</button>
         <button data-v="r">Random</button>
       </div>
-      <div class="opt">Enemy wizard level: <span id="lvlOut">10 (≈1500 Elo)</span></div>
-      <input type="range" id="lvl" class="slider" min="1" max="20" value="10" aria-label="Enemy wizard level">
-      <div class="scale"><span>Apprentice</span><span>Archmage</span></div>
+      <div class="opt">Enemy wizard strength: <span id="lvlOut">1500 Elo</span></div>
+      <input type="range" id="lvl" class="slider" min="300" max="3200" step="1" value="1500" aria-label="Enemy wizard Elo">
+      <div class="scale"><span>300</span><span>Full strength</span></div>
     </div>
 
     <button id="go" class="pri">Begin the duel</button>
@@ -43,16 +46,19 @@ scripts:
 </section>
 
 <section id="game" class="game hid">
-  <h1>Wizard Chess</h1>
-  <p class="sub">You are a wizard duelling a rival wizard. Cast spells on your own pieces, or hex the enemy’s. Spells cost mana, which returns as the duel goes on, plus your turn.</p>
+  <h1>Wizezz</h1>
+  <p class="sub">Cast spells on your own pieces, or hex the enemy’s. Spells cost mana, which returns as the duel goes on, plus your turn.</p>
 
   <div class="wrap">
     <div class="board-col">
-      <div id="st" aria-live="polite"></div>
+      <div class="pbar" id="pTop"><span class="av">🧙</span><span class="pname" id="nTop"></span><span class="prate" id="rTop"></span></div>
       <div id="bd"></div>
+      <div class="pbar" id="pBottom"><span class="av">🙂</span><span class="pname" id="nBottom"></span><span class="prate" id="rBottom"></span></div>
+      <div id="st" aria-live="polite"></div>
       <div class="btns">
         <button id="un">Undo</button>
-        <button id="nw">Restart</button>
+        <button id="nw">New game</button>
+        <button id="rs">Resign</button>
         <button id="mn">Menu</button>
       </div>
       <p id="nt" class="hint nt" aria-live="polite"></p>

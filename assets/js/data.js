@@ -40,8 +40,7 @@ const PRE = [
   ['Ward the queen against pawns', {k:'immune', side:'x', a:'q', b:'p'}]
 ];
 
-const LEVEL_ELO = [0, 500, 600, 700, 800, 1000, 1150, 1250, 1320, 1400, 1500, 1600, 1750, 1900, 2000, 2150, 2300, 2450, 2600, 2800, 3000];
-const levelText = l => `${l} (≈${LEVEL_ELO[l]} Elo)`;
+const eloText = e => `${e} Elo`;
 
 let S;
 let sel = null;
@@ -49,7 +48,7 @@ let legal = [];
 let hist = [];
 let rules = [];
 let human = 'w';
-let level = 10;
+let elo = 1500;
 let busy = false;
 let tok = 0;
 let since = 0;

@@ -1,44 +1,22 @@
 :root {
-  --bg: #eef1f4;
-  --fg: #1c2430;
-  --card: #fff;
-  --line: #d3dae2;
-  --lt: #e4eaee;
-  --dk: #6f8fa8;
-  --hl: #2f9e6e;
-  --chk: #e5484d;
-  --acc: #5a3d9a;
-  --onacc: #fff;
+  --bg: #262421;
+  --fg: #bababa;
+  --strong: #ffffff;
+  --card: #302e2c;
+  --card-2: #3d3b38;
+  --line: #474541;
+  --lt: #eeeed2;
+  --dk: #769656;
+  --hl: #f6f669;
+  --chk: #d64541;
+  --acc: #81b64c;
+  --acc-dark: #6a9a3c;
+  --onacc: #ffffff;
   --dot: #e8a317;
+  color-scheme: dark;
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #14181d;
-    --fg: #e6ebf0;
-    --card: #1c222a;
-    --line: #2f3844;
-    --lt: #9fb3c4;
-    --dk: #4a6378;
-    --acc: #c3a6ff;
-    --onacc: #14181d;
-    color-scheme: dark;
-  }
-}
-
-:root[data-theme="dark"] {
-  --bg: #14181d;
-  --fg: #e6ebf0;
-  --card: #1c222a;
-  --line: #2f3844;
-  --lt: #9fb3c4;
-  --dk: #4a6378;
-  --acc: #c3a6ff;
-  --onacc: #14181d;
-  color-scheme: dark;
 }
 
 *, *::before, *::after {
@@ -49,7 +27,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--fg);
-  font: 16px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -64,13 +42,13 @@ main {
 }
 
 h1 {
-  font: 600 1.7rem/1.2 Georgia, "Iowan Old Style", serif;
+  font: 700 1.6rem/1.2 system-ui, -apple-system, "Segoe UI", sans-serif;
   margin: 0;
   letter-spacing: 0.01em;
 }
 
 h2 {
-  font: 600 1rem/1.3 Georgia, serif;
+  font: 700 1rem/1.3 system-ui, -apple-system, "Segoe UI", sans-serif;
   margin: 16px 0 8px;
 }
 
@@ -108,8 +86,13 @@ h2 {
 .pri {
   background: var(--acc);
   color: var(--onacc);
-  border-color: var(--acc);
-  font-weight: 600;
+  font-weight: 700;
+  box-shadow: 0 3px 0 var(--acc-dark);
+}
+
+.pri:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--acc-dark);
 }
 
 .btn {
@@ -125,11 +108,15 @@ select,
 input,
 button {
   font: inherit;
-  padding: 7px 10px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: var(--bg);
-  color: var(--fg);
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--card-2);
+  color: #e6e6e6;
+}
+
+button:hover:not(:disabled) {
+  filter: brightness(1.12);
 }
 
 select,
@@ -162,8 +149,8 @@ a:focus-visible {
 
 .card {
   background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 10px;
+  border: 0;
+  border-radius: 8px;
   padding: 14px 16px;
   flex: 1;
   min-width: 280px;
@@ -192,7 +179,7 @@ a:focus-visible {
 }
 
 .brand {
-  font: 600 1.1rem Georgia, serif;
+  font: 700 1.05rem system-ui, -apple-system, "Segoe UI", sans-serif;
   color: var(--fg);
   text-decoration: none;
 }

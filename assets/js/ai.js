@@ -53,10 +53,9 @@ function pseudo(b, col, ep) {
   return o;
 }
 
-function engineSetting(l) {
-  const elo = LEVEL_ELO[l];
-  if (elo >= 1320) return {cfg: {elo}, depth: Math.min(14, 8 + Math.floor((elo - 1320) / 300))};
-  return {cfg: {skill: Math.max(0, Math.min(10, Math.round((elo - 400) / 120)))}, depth: elo < 1000 ? 2 : 4};
+function engineSetting(e) {
+  if (e >= 1320) return {cfg: {elo: e}, depth: Math.min(14, 8 + Math.floor((e - 1320) / 300))};
+  return {cfg: {skill: Math.max(0, Math.min(10, Math.round((e - 400) / 120)))}, depth: e < 1000 ? 2 : 4};
 }
 
 function lineValue(col, x) {
@@ -69,13 +68,13 @@ function lineValue(col, x) {
 }
 
 function searchPick(col, ms) {
-  const d = level <= 5 ? 0 : level <= 12 ? 1 : 2;
+  const d = elo <= 1000 ? 0 : elo <= 1800 ? 1 : 2;
   ms = ms.slice().sort(() => Math.random() - .5);
   let best = ms[0], bv = -Infinity;
   for (const x of ms) {
     const r = doMove(S.b, x.f, x.m);
     let v = -nm(r.b, opp(col), r.ep, d, -Infinity, -bv);
-    if (level <= 5) v += Math.random() * 120;
+    if (elo <= 1000) v += Math.random() * 120;
     if (v > bv) {
       bv = v;
       best = x;
@@ -89,7 +88,7 @@ async function chooseMove(col, ms) {
   const std = ms.filter(x => stdKeys.has(key(x.f, x.m)));
   let best = null;
   if (std.length) {
-    const st = engineSetting(level);
+    const st = engineSetting(elo);
     let mv = null;
     try {
       const r = await sfSearch(toFen(S.b, col, S.ep), std.map(x => uciOf(S.b, x.f, x.m)), st.depth, st.cfg);
@@ -190,7 +189,7 @@ function bestSpell(col) {
       pickR = r;
     }
   }
-  const margin = 160 - level * 6;
+  const margin = Math.max(40, 160 - (elo - 500) / 25);
   return pv - base > margin ? pickR : null;
 }
 
