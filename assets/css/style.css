@@ -242,3 +242,40 @@ a:focus-visible {
   margin: 0;
   opacity: 0.85;
 }
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.profile-btn {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 999px;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  border: 0;
+  background: transparent;
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 2px 6px;
+}
+
+.profile-card {
+  position: relative;
+  text-align: left;
+  display: grid;
+  gap: 10px;
+}
+
+.profile-card h2 {
+  margin: 0;
+}

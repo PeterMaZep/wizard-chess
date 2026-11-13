@@ -1,9 +1,12 @@
 <header class="site-header">
   <div class="inner">
     <a class="brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
-    <nav class="nav">
-      <a href="{{ '/' | relative_url }}"{% if page.url == '/' %} aria-current="page"{% endif %}>Home</a>
-      <a href="{{ '/play/' | relative_url }}"{% if page.url == '/play/' %} aria-current="page"{% endif %}>Play</a>
-    </nav>
+    <div class="header-right">
+      <nav class="nav">
+        <a href="{{ '/' | relative_url }}"{% if page.url == '/' %} aria-current="page"{% endif %}>Home</a>
+        <a href="{{ '/play/' | relative_url }}"{% if page.url == '/play/' %} aria-current="page"{% endif %}>Play</a>
+      </nav>
+      <button id="profileBtn" class="profile-btn" type="button" aria-label="Account settings" title="Account">👤</button>
+    </div>
   </div>
 </header>

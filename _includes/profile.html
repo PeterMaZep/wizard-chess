@@ -1,0 +1,35 @@
+<div id="profilePanel" class="modal hid" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+  <div class="modal-card profile-card">
+    <button id="profileClose" class="close-btn" type="button" aria-label="Close">×</button>
+    <h2 id="profileTitle">Account</h2>
+
+    <div id="profileOut" class="menu-stack hid">
+      <p class="hint">Log in or sign up to play online.</p>
+      <input id="pEmail" type="email" placeholder="Email" autocomplete="email">
+      <input id="pPass" type="password" placeholder="Password" autocomplete="current-password">
+      <div class="menu-row">
+        <button id="pLogin" type="button">Log in</button>
+        <button id="pSignup" type="button" class="pri">Sign up</button>
+      </div>
+      <button id="pGoogle" type="button">Continue with Google</button>
+    </div>
+
+    <div id="profileIn" class="menu-stack hid">
+      <p>Signed in as <strong id="pWhoEmail"></strong></p>
+      <p class="hint">Connected: <span id="pProviders"></span></p>
+
+      <div id="pSetpwBox" class="menu-stack hid">
+        <h3>Set a password</h3>
+        <p class="hint">Lets you also log in with email.</p>
+        <input id="pNew" type="password" placeholder="New password (6+ characters)" autocomplete="new-password">
+        <input id="pNew2" type="password" placeholder="Repeat password" autocomplete="new-password">
+        <button id="pSetPw" type="button" class="pri">Save password</button>
+      </div>
+
+      <button id="pConnectGoogle" type="button" class="hid">Connect Google account</button>
+      <button id="pLogout" type="button">Log out</button>
+    </div>
+
+    <p id="pMsg" class="hint"></p>
+  </div>
+</div>

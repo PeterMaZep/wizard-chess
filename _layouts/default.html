@@ -14,6 +14,8 @@
 {{ content }}
 </main>
 {% include footer.html %}
+{% include profile.html %}
+<script src="{{ '/assets/js/pages/profile.js' | relative_url }}"></script>
 <script>window.SITE_BASE = "{{ '/' | relative_url }}";</script>
 {% for js in page.scripts %}<script src="{{ js | relative_url }}?v={{ site.time | date: '%s' }}"></script>
 {% endfor %}<script type="module" src="{{ '/assets/js/firebase/account.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>

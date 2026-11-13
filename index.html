@@ -47,29 +47,17 @@ scripts:
   <section id="online" class="menu-card hid">
     <h2>Online multiplayer</h2>
 
-    <div id="authBox" class="menu-stack hid">
-      <p class="hint">Log in or sign up to play online.</p>
-      <input id="authEmail" type="email" placeholder="Email" autocomplete="email">
-      <input id="authPass" type="password" placeholder="Password" autocomplete="current-password">
-      <div class="menu-row">
-        <button id="loginBtn" type="button">Log in</button>
-        <button id="signupBtn" type="button" class="pri">Sign up</button>
-      </div>
-      <button id="googleBtn" type="button">Continue with Google</button>
-      <p id="authMsg" class="hint"></p>
+    <div id="onlineSignin" class="menu-stack hid">
+      <p class="hint">Sign in to play online.</p>
+      <button id="signinBtn" type="button" class="pri">Sign in or sign up</button>
     </div>
 
-    <div id="setpwBox" class="menu-stack hid">
-      <p class="hint">Signed in as <strong id="pwEmail"></strong>. Set a password to finish your account, so you can also log in with email.</p>
-      <input id="newPass" type="password" placeholder="New password (6+ characters)" autocomplete="new-password">
-      <input id="newPass2" type="password" placeholder="Repeat password" autocomplete="new-password">
-      <button id="setPwBtn" type="button" class="pri">Save password</button>
-      <p id="pwMsg" class="hint"></p>
+    <div id="onlineSetpw" class="menu-stack hid">
+      <p class="hint">Set a password on your account first, so you can also log in with email.</p>
+      <button id="setpwBtn" type="button" class="pri">Set a password</button>
     </div>
 
     <div id="onlineBox" class="menu-stack hid">
-      <p class="hint">Signed in as <strong id="acctEmail"></strong></p>
-      <button id="connectGoogleBtn" type="button" class="hid">Connect Google account</button>
       <button id="createBtn" type="button">Create join code</button>
       <button id="randomBtn" type="button">Find random match</button>
       <div class="menu-row">
@@ -77,7 +65,6 @@ scripts:
         <button id="joinBtn" type="button">Join</button>
       </div>
       <p id="homeMsg" class="hint"></p>
-      <button id="logoutBtn" type="button" class="back">Log out</button>
     </div>
 
     <button class="back" data-back="modes" type="button">Back</button>
