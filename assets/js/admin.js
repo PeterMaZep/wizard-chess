@@ -67,6 +67,53 @@
 
     // ---- spells / hexes ----
     hexclear: () => { rules = []; render(); },
+    
+    // Clears MY hexes (cast by me, targeting opponent)
+    clearhex: () => { 
+      rules = rules.filter(r => !(r.cu === true && r.side === opp(human))); 
+      render(); 
+    },
+    
+    // Clears THEIR hexes (cast by opponent, targeting me)
+    clearhexb: () => { 
+      rules = rules.filter(r => !(r.cu === true && r.side === human)); 
+      render(); 
+    },
+    
+    // Clears THEIR spells
+    clearspells: () => { 
+      rules = rules.filter(r => !(r.cu !== true && r.side === opp(human))); 
+      render(); 
+    },
+    
+    // Clears MY spells
+    clearspellsb: () => { 
+      rules = rules.filter(r => !(r.cu !== true && r.side === human)); 
+      render(); 
+    },
+
+    // Clears THEIR latest spell
+    clearlastspell: () => {
+      const idx = rules.findLastIndex(r => r.cu !== true && r.side === opp(human));
+      if (idx !== -1) rules.splice(idx, 1);
+      render();
+    },
+
+    // Clears MY latest spell
+    clearlastspellb: () => {
+      const idx = rules.findLastIndex(r => r.cu !== true && r.side === human);
+      if (idx !== -1) rules.splice(idx, 1);
+      render();
+    },
+
+    // Hexes all their pieces with freeze
+    freezehex: () => {
+      ['p', 'r', 'n', 'b', 'q', 'k'].forEach(t => {
+        rules.push({k: 'freeze', side: opp(human), cu: true, a: t, b: 'p', n: 1, t: ""});
+      });
+      render();
+    },
+
     hex:   (k,a,b,n) => { rules.push({k, side:human, cu:true,  a:a||"p", b:b||"p", n:+n||1, t:""}); render(); },
     spell: (k,a,b,n) => { rules.push({k, side:human, cu:false, a:a||"p", b:b||"p", n:+n||1, t:""}); render(); },
     ruleslist: () => console.table(rules),
