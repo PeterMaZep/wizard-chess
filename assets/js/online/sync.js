@@ -32,6 +32,7 @@ function onGameSnap(snap) {
     startOnlineBoard();
     startHeartbeat();
   }
+  renderChat(g.chat || []);
   const evs = g.events || [];
   if (evs.length < cur.applied - cur.pending) return resync(evs);
   for (let i = cur.applied; i < evs.length; i++) {

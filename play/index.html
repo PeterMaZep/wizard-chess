@@ -13,6 +13,7 @@ scripts:
   - /assets/js/rating/rating.js
   - /assets/js/online/lobby.js
   - /assets/js/online/sync.js
+  - /assets/js/online/chat.js
   - /assets/js/chess/ai.js
   - /assets/js/game/state.js
   - /assets/js/game/view.js
@@ -72,6 +73,14 @@ scripts:
 
       <h2>Active spells</h2>
       <ul id="rl"></ul>
+    </aside>
+    <aside id="chatBox" class="card chat hid">
+      <h2 class="flush">Chat</h2>
+      <div id="chatLog" class="chat-log" aria-live="polite"></div>
+      <form id="chatForm" class="chat-form">
+        <input id="chatInput" maxlength="200" placeholder="Say something…" autocomplete="off" aria-label="Chat message">
+        <button id="chatSend" type="submit" class="pri">Send</button>
+      </form>
     </aside>
   </div>
 

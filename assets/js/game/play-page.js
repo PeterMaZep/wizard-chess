@@ -14,6 +14,7 @@ function startOnlineBoard() {
   human = online.color;
   online.applied = 0;
   online.pending = 0;
+  $('chatBox').classList.remove('hid');
   showGame();
   render();
 }
