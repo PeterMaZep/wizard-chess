@@ -1,0 +1,75 @@
+.hero {
+  text-align: center;
+  padding: 36px 0 12px;
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 8vw, 3.2rem);
+}
+
+.menu {
+  max-width: 440px;
+  margin: 18px auto 0;
+  display: grid;
+  gap: 14px;
+}
+
+.menu-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.menu-card h2 {
+  margin: 0 0 2px;
+  font-size: 1.15rem;
+}
+
+.menu-card > button,
+.menu-card > .menu-row,
+.menu-card > .seg,
+.menu-card > .slider {
+  width: 100%;
+}
+
+.menu-card button.back {
+  background: transparent;
+  border-color: transparent;
+  color: var(--acc);
+}
+
+.menu-row {
+  display: flex;
+  gap: 8px;
+}
+
+.menu-row input {
+  flex: 1;
+}
+
+.menu-row button {
+  flex: 0 0 auto;
+}
+
+.menu-card .opt,
+.menu-card .scale,
+.menu-card .hint,
+.menu-card .rating-line {
+  margin: 0;
+}
+
+.lobby {
+  text-align: center;
+  max-width: 420px;
+  margin: 40px auto;
+  display: grid;
+  gap: 12px;
+}
+
+.join-code {
+  font: 700 2.4rem/1.2 ui-monospace, monospace;
+  letter-spacing: 0.3em;
+}

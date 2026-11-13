@@ -65,3 +65,15 @@ function revertGame(g) {
     saveRating();
   }
 }
+
+function updateRatingUI() {
+  if (!$('myElo')) return;
+  $('myElo').textContent = rating.elo;
+  const rec = recommendedElo();
+  $('recBtn').textContent = eloText(rec);
+  $('recBtn').dataset.v = rec;
+  $('lvl').max = maxAllowedElo();
+  if (+$('lvl').value > maxAllowedElo()) $('lvl').value = maxAllowedElo();
+  $('lvlOut').textContent = eloText(+$('lvl').value);
+  $('capNote').textContent = rating.elo < 300 ? 'Below 300 Elo you can play bots up to 350 Elo.' : '';
+}

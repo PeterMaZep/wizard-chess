@@ -81,21 +81,6 @@ function recordIfOver() {
   updateRatingUI();
 }
 
-function updateRatingUI() {
-  $('myElo').textContent = rating.elo;
-  const rec = recommendedElo();
-  $('recBtn').textContent = eloText(rec);
-  $('recBtn').dataset.v = rec;
-  $('lvl').max = maxAllowedElo();
-  if (+$('lvl').value > maxAllowedElo()) $('lvl').value = maxAllowedElo();
-  $('lvlOut').textContent = eloText(+$('lvl').value);
-  $('capNote').textContent = rating.elo < 300 ? 'Below 300 Elo you can play bots up to 350 Elo.' : '';
-}
-
-$('recBtn').onclick = () => {
-  $('lvl').value = $('recBtn').dataset.v;
-  $('lvlOut').textContent = eloText(+$('lvl').value);
-};
 
 function opts() {
   return Object.keys(N).map(k => `<option value="${k}">${N[k]}</option>`).join('');

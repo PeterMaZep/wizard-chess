@@ -48,37 +48,8 @@ $('cont').onclick = () => {
   render();
 };
 
-document.querySelectorAll('.seg').forEach(g => g.onclick = e => {
-  const b = e.target.closest('button');
-  if (!b) return;
-  g.querySelectorAll('button').forEach(x => x.classList.toggle('on', x == b));
-});
-
-const snapElo = () => {
-  const v = roundElo(+$('lvl').value);
-  $('lvl').value = v;
-  $('lvlOut').textContent = eloText(v);
-  return v;
-};
-$('lvl').oninput = () => $('lvlOut').textContent = eloText(+$('lvl').value);
-let sliderHeld = false;
-$('lvl').addEventListener('pointerdown', () => sliderHeld = true);
-$('lvl').addEventListener('touchstart', () => sliderHeld = true, {passive: true});
-$('lvl').addEventListener('keydown', () => sliderHeld = true);
-const releaseSlider = () => {
-  if (sliderHeld) {
-    sliderHeld = false;
-    snapElo();
-  }
-};
-window.addEventListener('pointerup', releaseSlider);
-window.addEventListener('touchend', releaseSlider);
-window.addEventListener('keyup', releaseSlider);
-$('lvl').onchange = snapElo;
-
+$('cs').onchange = cform;
+$('cgo').onclick = () => curse(curseRule());
 
 document.querySelector('aside').addEventListener('change', lab);
 document.querySelector('aside').addEventListener('input', lab);
-
-$('cs').onchange = cform;
-$('cgo').onclick = () => curse(curseRule());

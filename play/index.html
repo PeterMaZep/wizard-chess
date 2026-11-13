@@ -20,31 +20,6 @@ scripts:
 ---
 <script>window.SF_BASE = "{{ '/assets/js/vendor/' | relative_url }}";</script>
 
-<section id="setup" class="setup">
-  <div class="panel">
-    <div class="pcs" aria-hidden="true">♜♞♝♛♚♝♞♜</div>
-    <h1>Wizezz</h1>
-    <p class="lede">Choose how strong the enemy wizard is, then begin the duel.</p>
-
-    <p class="rating-line">Your Elo <strong id="myElo">600</strong> · Recommended <button id="recBtn" type="button" class="chip-btn">650 Elo</button></p>
-    <p id="capNote" class="hint"></p>
-
-    <div id="cpuopts">
-      <div class="opt">You play</div>
-      <div class="seg" id="side2">
-        <button data-v="w" class="on">White</button>
-        <button data-v="b">Black</button>
-        <button data-v="r">Random</button>
-      </div>
-      <div class="opt">Enemy wizard strength: <span id="lvlOut">1500 Elo</span></div>
-      <input type="range" id="lvl" class="slider" min="300" max="3200" step="1" value="1500" aria-label="Enemy wizard Elo">
-      <div class="scale"><span>300</span><span>Full strength</span></div>
-    </div>
-
-    <button id="go" class="pri">Begin the duel</button>
-  </div>
-</section>
-
 <section id="game" class="game hid">
   <h1>Wizezz</h1>
   <p class="sub">Cast spells on your own pieces, or hex the enemy’s. Spells cost mana, which returns as the duel goes on, plus your turn.</p>

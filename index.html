@@ -4,46 +4,64 @@ title: Home
 description: Duel a rival wizard across the board and bend the rules of chess with magic.
 extra_css:
   - /assets/css/game.css
+  - /assets/css/menu.css
 scripts:
   - /assets/js/chess/data.js
   - /assets/js/rating/rating.js
   - /assets/js/online/lobby.js
   - /assets/js/pages/home.js
 ---
-<section id="home" class="hero">
+<section id="hero" class="hero">
   <div class="pcs" aria-hidden="true">♜♞♝♛♚♝♞♜</div>
   <h1>Wizezz</h1>
   <p class="lede">Duel a rival wizard across the board, and bend the rules of chess with magic. Make knights move like kings, or let rooks levitate over pieces.</p>
-  <button id="beginBtn" class="btn pri" type="button">Begin</button>
+  <button id="playBtn" class="btn pri" type="button">Play</button>
 </section>
 
-<section id="modes" class="panel hid">
-  <h2>Choose your opponent</h2>
-  <button id="modeAi" class="pri" type="button">Play against Stockfish</button>
-  <button id="modeLocal" type="button">Local multiplayer</button>
-  <button id="modeOnline" type="button">Online multiplayer</button>
-  <button id="backBtn" class="chip-btn" type="button">Back</button>
-</section>
+<div class="menu">
+  <section id="modes" class="menu-card hid">
+    <h2>Choose your opponent</h2>
+    <button id="modeAi" class="pri" type="button">Play against Stockfish</button>
+    <button id="modeLocal" type="button">Local multiplayer</button>
+    <button id="modeOnline" type="button">Online multiplayer</button>
+    <button class="back" data-back="hero" type="button">Back</button>
+  </section>
 
-<section id="online" class="panel hid">
-  <h2>Online multiplayer</h2>
-  <p class="account-line"><span id="acctText">Loading account…</span> <button id="acctBtn" type="button" class="chip-btn">Sign in with Google</button></p>
-  <div class="row">
+  <section id="stockfish" class="menu-card hid">
+    <h2>Play against Stockfish</h2>
+    <p class="rating-line">Your Elo <strong id="myElo">600</strong> · Recommended <button id="recBtn" type="button" class="chip-btn">650 Elo</button></p>
+    <p id="capNote" class="hint"></p>
+    <div class="opt">You play</div>
+    <div class="seg" id="side2">
+      <button data-v="w" class="on">White</button>
+      <button data-v="b">Black</button>
+      <button data-v="r">Random</button>
+    </div>
+    <div class="opt">Enemy wizard strength: <span id="lvlOut">1500 Elo</span></div>
+    <input type="range" id="lvl" class="slider" min="300" max="3200" step="1" value="1500" aria-label="Enemy wizard Elo">
+    <div class="scale"><span>300</span><span>Full strength</span></div>
+    <button id="startAi" class="pri" type="button">Start game</button>
+    <button class="back" data-back="modes" type="button">Back</button>
+  </section>
+
+  <section id="online" class="menu-card hid">
+    <h2>Online multiplayer</h2>
+    <p class="account-line"><span id="acctText">Loading account…</span> <button id="acctBtn" type="button" class="chip-btn">Sign in with Google</button></p>
     <button id="createBtn" type="button">Create join code</button>
     <button id="randomBtn" type="button">Find random match</button>
-  </div>
-  <div class="row">
-    <input id="codeIn" maxlength="6" placeholder="Enter code here" autocapitalize="characters" aria-label="Join code">
-    <button id="joinBtn" type="button">Join</button>
-  </div>
-  <p id="homeMsg" class="hint"></p>
-  <button id="onlineBack" class="chip-btn" type="button">Back</button>
-</section>
+    <div class="menu-row">
+      <input id="codeIn" maxlength="6" placeholder="Enter code here" autocapitalize="characters" aria-label="Join code">
+      <button id="joinBtn" type="button">Join</button>
+    </div>
+    <p id="homeMsg" class="hint"></p>
+    <button class="back" data-back="modes" type="button">Back</button>
+  </section>
 
-<section id="resume" class="panel hid">
-  <h2>Unfinished games</h2>
-  <ul id="resumeList"></ul>
-</section>
+  <section id="resume" class="menu-card hid">
+    <h2>Unfinished games</h2>
+    <ul id="resumeList"></ul>
+  </section>
+</div>
 
 <section class="features">
   <article class="card">

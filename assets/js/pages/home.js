@@ -1,26 +1,55 @@
 const base = window.SITE_BASE || '/';
-const showEl = el => el.classList.remove('hid');
-const hideEl = el => el.classList.add('hid');
 
-$('beginBtn').onclick = () => {
-  hideEl($('home'));
-  showEl($('modes'));
-};
-$('backBtn').onclick = () => {
-  hideEl($('modes'));
-  hideEl($('online'));
-  showEl($('home'));
-};
-$('modeAi').onclick = () => location.href = base + 'play/';
+function snapElo() {
+  const v = roundElo(+$('lvl').value);
+  $('lvl').value = v;
+  $('lvlOut').textContent = eloText(v);
+  return v;
+}
+
+function showPanel(name) {
+  ['modes', 'stockfish', 'online'].forEach(id => $(id).classList.toggle('hid', id != name));
+  $('hero').classList.toggle('hid', !!name);
+}
+
+$('playBtn').onclick = () => showPanel('modes');
+document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => showPanel(b.dataset.back));
+
+$('modeAi').onclick = () => showPanel('stockfish');
 $('modeLocal').onclick = () => location.href = base + 'play/?mode=local';
-$('modeOnline').onclick = () => {
-  hideEl($('modes'));
-  showEl($('online'));
+$('modeOnline').onclick = () => showPanel('online');
+
+document.querySelectorAll('.seg').forEach(g => g.onclick = e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  g.querySelectorAll('button').forEach(x => x.classList.toggle('on', x == b));
+});
+
+$('recBtn').onclick = () => {
+  $('lvl').value = $('recBtn').dataset.v;
+  $('lvlOut').textContent = eloText(+$('lvl').value);
 };
-$('onlineBack').onclick = () => {
-  hideEl($('online'));
-  showEl($('modes'));
+$('lvl').oninput = () => $('lvlOut').textContent = eloText(+$('lvl').value);
+let sliderHeld = false;
+$('lvl').addEventListener('pointerdown', () => sliderHeld = true);
+$('lvl').addEventListener('touchstart', () => sliderHeld = true, {passive: true});
+$('lvl').addEventListener('keydown', () => sliderHeld = true);
+const releaseSlider = () => {
+  if (sliderHeld) {
+    sliderHeld = false;
+    snapElo();
+  }
 };
+window.addEventListener('pointerup', releaseSlider);
+window.addEventListener('touchend', releaseSlider);
+window.addEventListener('keyup', releaseSlider);
+$('lvl').onchange = snapElo;
+
+$('startAi').onclick = () => {
+  const side = document.querySelector('#side2 .on').dataset.v;
+  location.href = base + 'play/?mode=ai&side=' + side + '&elo=' + snapElo();
+};
+
 $('createBtn').onclick = () => location.href = base + 'hosting/';
 $('randomBtn').onclick = () => location.href = base + 'randomduel/';
 $('joinBtn').onclick = async () => {
@@ -36,8 +65,8 @@ $('joinBtn').onclick = async () => {
 async function renderResume() {
   const list = $('resumeList');
   list.innerHTML = '';
-  const user = window.fb.auth.currentUser;
-  if (!user) return hideEl($('resume'));
+  const user = window.fb && window.fb.auth.currentUser;
+  if (!user) return $('resume').classList.add('hid');
   let shown = 0;
   for (const id of rememberedGames()) {
     const snap = await window.fb.getDoc(window.fb.doc(window.fb.db, 'games', id)).catch(() => null);
@@ -61,7 +90,7 @@ async function renderResume() {
     list.appendChild(li);
     shown++;
   }
-  shown ? showEl($('resume')) : hideEl($('resume'));
+  $('resume').classList.toggle('hid', !shown);
 }
 
 window.addEventListener('account-state', e => {
@@ -71,3 +100,5 @@ window.addEventListener('account-state', e => {
   renderResume();
 });
 $('acctBtn').onclick = () => window.accountToggle && window.accountToggle();
+
+updateRatingUI();

@@ -22,6 +22,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 window.fb = {app, auth, db, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, collection, query, where, limit, onSnapshot, runTransaction};
+window.dispatchEvent(new Event('fb-ready'));
 let uid = null;
 
 async function pushRating(r) {

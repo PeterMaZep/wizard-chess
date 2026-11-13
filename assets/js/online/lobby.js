@@ -6,6 +6,13 @@ const CODE_CHARS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 
 const fbx = () => window.fb;
 
+function fbReady() {
+  return new Promise(resolve => {
+    if (window.fb) return resolve();
+    window.addEventListener('fb-ready', () => resolve(), {once: true});
+  });
+}
+
 function rememberedGames() {
   try {
     return JSON.parse(localStorage.getItem(GAMES_KEY)) || [];
@@ -25,6 +32,7 @@ function forgetGame(id) {
 }
 
 async function requireUser() {
+  await fbReady();
   await fbx().auth.authStateReady();
   const u = fbx().auth.currentUser;
   if (!u) throw new Error('Sign in with Google first.');
@@ -59,6 +67,7 @@ async function createCodeGame() {
 }
 
 async function cancelGame(id) {
+  await fbReady();
   await fbx().deleteDoc(fbx().doc(fbx().db, 'games', id)).catch(() => {});
 }
 
