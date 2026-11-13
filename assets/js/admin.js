@@ -55,6 +55,7 @@
       console.table(out);
     },
 
+    // ---- board ----
     spawn:  (t, sq) => { const {r,c}=_sq(sq); S.b[r][c] = {t:_pt[String(t).toLowerCase()]||t, c:human};     render(); },
     spawnb: (t, sq) => { const {r,c}=_sq(sq); S.b[r][c] = {t:_pt[String(t).toLowerCase()]||t, c:opp(human)}; render(); },
     kill:   (sq)    => { const {r,c}=_sq(sq); S.b[r][c] = null; render(); },
@@ -64,20 +65,24 @@
                            if(!p) throw new Error("no piece on "+from);
                            S.b[t.r][t.c]=p; S.b[f.r][f.c]=null; render(); },
 
+    // ---- spells / hexes ----
     hexclear: () => { rules = []; render(); },
     hex:   (k,a,b,n) => { rules.push({k, side:human, cu:true,  a:a||"p", b:b||"p", n:+n||1, t:""}); render(); },
     spell: (k,a,b,n) => { rules.push({k, side:human, cu:false, a:a||"p", b:b||"p", n:+n||1, t:""}); render(); },
     ruleslist: () => console.table(rules),
 
+    // ---- mana ----
     mana:    n => { S.pts[human] = +n; render(); },
     emana:   n => { S.pts[opp(human)] = +n; render(); },
     maxmana: () => { S.pts[human] = S.pts[opp(human)] = 99; render(); },
 
+    // ---- state ----
     turn: c => { S.turn = c || opp(S.turn); render(); },
     free: () => { busy = false; render(); },
     swap: () => { human = opp(human); render(); },
     unfreeze: () => { S.turn = human; busy = false; render(); },
 
+    // ---- outcome ----
     win:  () => { S.over = "Admin wins.";           render(); },
     lose: () => { S.over = "Admin loses.";          render(); },
     draw: () => { S.over = "Admin declares a draw."; render(); },
@@ -86,7 +91,7 @@
   window.admin = async (line, ...rest) => {
     if (!isAdmin()) await _adminReady;
     if (!isAdmin()) return console.warn("🔒 admin only — run adminWhoami() to check");
-    const parts = typeof line === "string" ? line.trim().split(/\s+/) : [line, ...rest];
+    const parts = [line, ...rest].join(' ').trim().split(/\s+/);
     const [cmd, ...args] = parts;
     if (!ADMIN[cmd]) return console.warn("unknown:", cmd, "— try admin('help')");
     try { ADMIN[cmd](...args); } catch (e) { console.error("admin:", e.message); }
