@@ -73,3 +73,20 @@
   font: 700 2.4rem/1.2 ui-monospace, monospace;
   letter-spacing: 0.3em;
 }
+
+.menu-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.menu-stack > button {
+  width: 100%;
+}
+
+.menu-card input {
+  width: 100%;
+}
+
+.menu-row input {
+  width: auto;
+}

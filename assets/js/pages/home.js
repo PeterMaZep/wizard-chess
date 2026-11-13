@@ -93,12 +93,38 @@ async function renderResume() {
   $('resume').classList.toggle('hid', !shown);
 }
 
+function refreshOnline(state) {
+  $('authBox').classList.toggle('hid', !!state);
+  $('setpwBox').classList.toggle('hid', !state || state.hasPassword);
+  $('onlineBox').classList.toggle('hid', !state || !state.hasPassword);
+  if (state) {
+    $('pwEmail').textContent = state.email;
+    $('acctEmail').textContent = state.email;
+    $('connectGoogleBtn').classList.toggle('hid', state.hasGoogle);
+  }
+}
+
+async function attempt(msgEl, action) {
+  msgEl.textContent = '';
+  try {
+    await action();
+  } catch (e) {
+    msgEl.textContent = window.account.friendly(e);
+  }
+}
+
+$('loginBtn').onclick = () => attempt($('authMsg'), () => window.account.logIn($('authEmail').value, $('authPass').value));
+$('signupBtn').onclick = () => attempt($('authMsg'), () => window.account.signUp($('authEmail').value, $('authPass').value));
+$('googleBtn').onclick = () => attempt($('authMsg'), () => window.account.googleSignIn());
+$('connectGoogleBtn').onclick = () => attempt($('homeMsg'), () => window.account.connectGoogle());
+$('logoutBtn').onclick = () => window.account.logOut();
+$('setPwBtn').onclick = () => {
+  const p1 = $('newPass').value, p2 = $('newPass2').value;
+  if (p1 !== p2) return $('pwMsg').textContent = 'The passwords do not match.';
+  attempt($('pwMsg'), () => window.account.setPassword(p1));
+};
+
 window.addEventListener('account-state', e => {
-  const u = e.detail;
-  $('acctText').textContent = u ? `Signed in as ${u.name}.` : 'Sign in with Google to play online.';
-  $('acctBtn').textContent = u ? 'Sign out' : 'Sign in with Google';
+  refreshOnline(e.detail);
   renderResume();
 });
-$('acctBtn').onclick = () => window.accountToggle && window.accountToggle();
-
-updateRatingUI();
